@@ -21,6 +21,7 @@ public class TicTacToeGame {
     public char mBoard[] = {OPEN_SPOT,OPEN_SPOT,OPEN_SPOT,OPEN_SPOT,OPEN_SPOT,OPEN_SPOT,OPEN_SPOT,OPEN_SPOT,OPEN_SPOT};
     public char turn;
     public char startTurn;
+    public boolean gameOver;
 
     private Random mRand; //dime si alguien tiene dudas de que por aca nos pasamos el juego nanana
 
@@ -31,6 +32,7 @@ public class TicTacToeGame {
 
         startTurn = HUMAN_PLAYER; // Human starts first
         turn = HUMAN_PLAYER;
+        gameOver=false;
 
         win = 0;                // Set to 1, 2, or 3 when game is over
         humanWins= 0;
@@ -44,28 +46,33 @@ public class TicTacToeGame {
     //  1 if it's a tie
     //  2 if X won
     //  3 if O won
+
     public int checkForWinner() {
         // Check horizontal wins
         for (int i = 0; i <= 6; i += 3)	{
             if (mBoard[i] == HUMAN_PLAYER &&
                     mBoard[i+1] == HUMAN_PLAYER &&
-                    mBoard[i+2]== HUMAN_PLAYER)
-                return 2;
+                    mBoard[i+2]== HUMAN_PLAYER){
+                win = 2;
+                return 2;}
             if (mBoard[i] == COMPUTER_PLAYER &&
                     mBoard[i+1]== COMPUTER_PLAYER &&
-                    mBoard[i+2] == COMPUTER_PLAYER)
-                return 3;
+                    mBoard[i+2] == COMPUTER_PLAYER){
+                win = 3;
+                return 3;}
         }
         // Check vertical wins
         for (int i = 0; i <= 2; i++) {
             if (mBoard[i] == HUMAN_PLAYER &&
                     mBoard[i+3] == HUMAN_PLAYER &&
-                    mBoard[i+6]== HUMAN_PLAYER)
-                return 2;
+                    mBoard[i+6]== HUMAN_PLAYER){
+                win = 2;
+                return 2;}
             if (mBoard[i] == COMPUTER_PLAYER &&
                     mBoard[i+3] == COMPUTER_PLAYER &&
-                    mBoard[i+6]== COMPUTER_PLAYER)
-                return 3;
+                    mBoard[i+6]== COMPUTER_PLAYER){
+                win = 3;
+                return 3;}
         }
         // Check for diagonal wins
         if ((mBoard[0] == HUMAN_PLAYER &&
@@ -73,22 +80,26 @@ public class TicTacToeGame {
                 mBoard[8] == HUMAN_PLAYER) ||
                 (mBoard[2] == HUMAN_PLAYER &&
                         mBoard[4] == HUMAN_PLAYER &&
-                        mBoard[6] == HUMAN_PLAYER))
-            return 2;
+                        mBoard[6] == HUMAN_PLAYER)){
+            win = 2;
+            return 2;}
         if ((mBoard[0] == COMPUTER_PLAYER &&
                 mBoard[4] == COMPUTER_PLAYER &&
                 mBoard[8] == COMPUTER_PLAYER) ||
                 (mBoard[2] == COMPUTER_PLAYER &&
                         mBoard[4] == COMPUTER_PLAYER &&
-                        mBoard[6] == COMPUTER_PLAYER))
-            return 3;
+                        mBoard[6] == COMPUTER_PLAYER)){
+            win = 3;
+            return 3;}
         // Check for tie
         for (int i = 0; i < BOARD_SIZE; i++) {
             // If we find a number, then no one has won yet
-            if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER)
-                return 0;
+            if (mBoard[i] != HUMAN_PLAYER && mBoard[i] != COMPUTER_PLAYER){
+                win = 0;
+                return 0;}
         }
         // If we make it through the previous loop, all places are taken, so it's a tie
+        win = 1;
         return 1;
     }
 
@@ -163,6 +174,7 @@ public class TicTacToeGame {
             mBoard[i]=OPEN_SPOT;
         }
         win=0;
+        gameOver=false;
     }
     /** Set the given player at the given location on the game board.
      * The location must be available, or the board will not be changed.
@@ -198,4 +210,14 @@ public class TicTacToeGame {
     public char getBoardOccupant(int i){
         return mBoard[i];
     }
+
+    public boolean gameOver(){
+        if(win!=0) return true;
+        else return false;
+    }
+
+    public char[] getBoardState(){
+        return mBoard;
+    }
+
 }
