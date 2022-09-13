@@ -2,6 +2,7 @@ package com.example.tictactoe_app;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -35,10 +36,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView mInfoT;
     private TextView mInfoAW;
     private BoardView mBoardView;
-    MediaPlayer mHumanMediaPlayer;
-    MediaPlayer mWinHMediaPlayer;
-    MediaPlayer mWinAMediaPlayer;
-    MediaPlayer mTieMediaPlayer;
+    private MediaPlayer mHumanMediaPlayer;
+    private MediaPlayer mWinHMediaPlayer;
+    private MediaPlayer mWinAMediaPlayer;
+    private MediaPlayer mTieMediaPlayer;
+    private SharedPreferences mPrefs;
 
     Handler handler = new Handler();
 
@@ -55,24 +57,27 @@ public class MainActivity extends AppCompatActivity {
         mGame = new TicTacToeGame();
         mBoardView = (BoardView) findViewById(R.id.board);
         mBoardView.setGame(mGame);
-        showDialog(DIALOG_STARTER);
         // Listen for touches on the board
         mBoardView.setOnTouchListener(mTouchListener);
+        mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
+        // Restore the scores
+        mGame.humanWins = mPrefs.getInt("mHumanWins", 0);
+        mGame.androidWins = mPrefs.getInt("mComputerWins", 0);
+        mGame.ties = mPrefs.getInt("mTies", 0);
 
-        startNewGame();
         if (savedInstanceState == null) {
             startNewGame();
-        }
-        else {
+            if(mGame.getStartedGame()==false) {
+                showDialog(DIALOG_STARTER);
+            }
+        }else {
 // Restore the game's state
             mGame.mBoard =savedInstanceState.getCharArray("board") ;
             mGame.gameOver = savedInstanceState.getBoolean("mGameOver");
             mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
-            mGame.humanWins = savedInstanceState.getInt("mHumanWins");
-            mGame.androidWins = savedInstanceState.getInt("mComputerWins");
-            mGame.ties = savedInstanceState.getInt("mTies");
             mGame.startTurn = savedInstanceState.getChar("mGoFirst");
             mGame.turn = savedInstanceState.getChar("mTurn");
+            mGame.gameStarted = savedInstanceState.getBoolean("mGameStarted");
         }
         displayScores();
     }
@@ -97,6 +102,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.quit:
                 showDialog(DIALOG_QUIT_ID);
+                return true;
+            case R.id.reset_scores:
+                mGame.restartCount();
+                displayScores();
                 return true;
         }
         return false;
@@ -157,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.setView(layout);
                 builder.setPositiveButton("OK", null);
                 dialog = builder.create();
+                mGame.setStartedGame();
                 break;
         }
         return dialog;
@@ -185,12 +195,21 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putCharArray("board", mGame.getBoardState());
         outState.putBoolean("mGameOver", mGame.gameOver());
-        outState.putInt("mHumanWins", Integer.valueOf(mGame.humanWins));
-        outState.putInt("mComputerWins", Integer.valueOf(mGame.androidWins));
-        outState.putInt("mTies", Integer.valueOf(mGame.ties));
         outState.putCharSequence("info", mInfoTextView.getText());
         outState.putChar("mGoFirst", mGame.startTurn);
         outState.putChar("mTurn", mGame.turn);
+        outState.putBoolean("mGameStarted", mGame.gameStarted);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+// Save the current scores
+        SharedPreferences.Editor ed = mPrefs.edit();
+        ed.putInt("mHumanWins", mGame.humanWins);
+        ed.putInt("mComputerWins", mGame.androidWins);
+        ed.putInt("mTies", mGame.ties);
+        ed.commit();
     }
 
     // Set up the game board.

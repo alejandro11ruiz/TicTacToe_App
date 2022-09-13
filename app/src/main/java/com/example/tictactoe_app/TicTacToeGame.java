@@ -22,6 +22,7 @@ public class TicTacToeGame {
     public char turn;
     public char startTurn;
     public boolean gameOver;
+    public boolean gameStarted;
 
     private Random mRand; //dime si alguien tiene dudas de que por aca nos pasamos el juego nanana
 
@@ -33,6 +34,7 @@ public class TicTacToeGame {
         startTurn = HUMAN_PLAYER; // Human starts first
         turn = HUMAN_PLAYER;
         gameOver=false;
+        gameStarted=false;
 
         win = 0;                // Set to 1, 2, or 3 when game is over
         humanWins= 0;
@@ -206,6 +208,11 @@ public class TicTacToeGame {
         else return;
     }
 
+    public void restartCount(){
+        humanWins= 0;
+        ties= 0;
+        androidWins= 0;
+    }
 
     public char getBoardOccupant(int i){
         return mBoard[i];
@@ -220,4 +227,13 @@ public class TicTacToeGame {
         return mBoard;
     }
 
+    public void setStartedGame(){
+        if(gameStarted==true){
+            gameStarted=false;
+        }else gameStarted=true;
+    }
+
+    public boolean getStartedGame(){
+        return gameStarted;
+    }
 }
