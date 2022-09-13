@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             startNewGame();
-            if(mGame.getStartedGame()==false) {
-                showDialog(DIALOG_STARTER);
-            }
+            //if(mGame.getStartedGame()==false) {
+                //showDialog(DIALOG_STARTER);
+            //}
         }else {
 // Restore the game's state
             mGame.mBoard =savedInstanceState.getCharArray("board") ;
