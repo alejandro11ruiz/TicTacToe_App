@@ -12,15 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:gravity="center_horizontal"
-        android:text="Multi or Singleplayer"
+        android:text="Online or Offline"
         android:textSize="50dp"
         android:textColor="@android:color/black"/>
-
+    
     <Button
-        android:id="@+id/btnMulti"
+        android:id="@+id/btnOnline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Multiplayer"
+        android:text="Online"
         android:textAllCaps="false"
         android:layout_below="@id/selctAhead"
         android:layout_centerHorizontal="true"
@@ -29,12 +29,12 @@
         />
 
     <Button
-        android:id="@+id/btnSingle"
+        android:id="@+id/btnOffline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Singleplayer"
+        android:text="Offline"
         android:textAllCaps="false"
-        android:layout_below="@id/btnMulti"
+        android:layout_below="@id/btnOnline"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
         android:textSize="40dp"
