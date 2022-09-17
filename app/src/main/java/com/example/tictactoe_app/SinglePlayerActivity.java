@@ -50,21 +50,10 @@ public class SinglePlayerActivity extends AppCompatActivity {
         mBoardView.setOnTouchListener(mTouchListener);
         mPrefs = getSharedPreferences("ttt_prefs", MODE_PRIVATE);
         // Restore the scores
-        mGame.humanWins = mPrefs.getInt("mHumanWins", 0);
-        mGame.androidWins = mPrefs.getInt("mComputerWins", 0);
-        mGame.ties = mPrefs.getInt("mTies", 0);
+        mGame.humanWins = mPrefs.getInt("mHumanWins1", 0);
+        mGame.androidWins = mPrefs.getInt("mComputerWins1", 0);
+        mGame.ties = mPrefs.getInt("mTies1", 0);
 
-        if (savedInstanceState == null) {
-            startNewGame();
-        }else {
-// Restore the game's state
-            mGame.mBoard =savedInstanceState.getCharArray("board") ;
-            mGame.gameOver = savedInstanceState.getBoolean("mGameOver");
-            mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
-            mGame.startTurn = savedInstanceState.getChar("mGoFirst");
-            mGame.turn = savedInstanceState.getChar("mTurn");
-            mGame.gameStarted = savedInstanceState.getBoolean("mGameStarted");
-        }
         displayScores();
     }
 
@@ -151,24 +140,13 @@ public class SinglePlayerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putCharArray("board", mGame.getBoardState());
-        outState.putBoolean("mGameOver", mGame.gameOver());
-        outState.putCharSequence("info", mInfoTextView.getText());
-        outState.putChar("mGoFirst", mGame.startTurn);
-        outState.putChar("mTurn", mGame.turn);
-        outState.putBoolean("mGameStarted", mGame.gameStarted);
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
 // Save the current scores
         SharedPreferences.Editor ed = mPrefs.edit();
-        ed.putInt("mHumanWins", mGame.humanWins);
-        ed.putInt("mComputerWins", mGame.androidWins);
-        ed.putInt("mTies", mGame.ties);
+        ed.putInt("mHumanWins1", mGame.humanWins);
+        ed.putInt("mComputerWins1", mGame.androidWins);
+        ed.putInt("mTies1", mGame.ties);
         ed.commit();
     }
 

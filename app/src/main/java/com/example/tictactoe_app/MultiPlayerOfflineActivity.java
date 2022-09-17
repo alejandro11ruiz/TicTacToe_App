@@ -53,17 +53,6 @@ public class MultiPlayerOfflineActivity extends AppCompatActivity {
         mGame.androidWins = mPrefs.getInt("mComputerWins", 0);
         mGame.ties = mPrefs.getInt("mTies", 0);
 
-        if (savedInstanceState == null) {
-            startNewGame();
-        }else {
-// Restore the game's state
-            mGame.mBoard =savedInstanceState.getCharArray("board") ;
-            mGame.gameOver = savedInstanceState.getBoolean("mGameOver");
-            mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
-            mGame.startTurn = savedInstanceState.getChar("mGoFirst");
-            mGame.turn = savedInstanceState.getChar("mTurn");
-            mGame.gameStarted = savedInstanceState.getBoolean("mGameStarted");
-        }
         displayScores();
     }
 
@@ -104,17 +93,6 @@ public class MultiPlayerOfflineActivity extends AppCompatActivity {
         mHumanMediaPlayer.release();
         mWinHMediaPlayer.release();
         mTieMediaPlayer.release();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putCharArray("board", mGame.getBoardState());
-        outState.putBoolean("mGameOver", mGame.gameOver());
-        outState.putCharSequence("info", mInfoTextView.getText());
-        outState.putChar("mGoFirst", mGame.startTurn);
-        outState.putChar("mTurn", mGame.turn);
-        outState.putBoolean("mGameStarted", mGame.gameStarted);
     }
 
     @Override
