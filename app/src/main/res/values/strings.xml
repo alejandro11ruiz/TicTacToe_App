@@ -14,4 +14,11 @@
     <string name="quit_question">Are you sure you want to quit?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <string name="first_player1">Player 1, go first.</string>
+    <string name="first_player2">Player 2, go first.</string>
+    <string name="turn_player1">Turn Player 1.</string>
+    <string name="turn_player2">Turn Player 2.</string>
+    <string name="result_player1_wins">Player 1 won!</string>
+    <string name="result_player2_wins">Player 2 won!</string>
 </resources>

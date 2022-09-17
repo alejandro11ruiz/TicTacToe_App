@@ -34,15 +34,13 @@ public class MainActivity extends AppCompatActivity {
         mMultiBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 singleUser=false;
-                Intent intent1 = new Intent(v.getContext(), MultiPlayerGameSelectionActivity.class);
-                startActivity(intent1);
+                startActivity(new Intent(v.getContext(), MultiPlayerGameSelectionActivity.class));
             }
         });
         mSingleBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 singleUser=true;
-                Intent intent2 = new Intent(v.getContext(), SinglePlayerActivity.class);
-                startActivity(intent2);
+                startActivity(new Intent(v.getContext(), SinglePlayerActivity.class));
             }
         } );
     }

@@ -2,6 +2,7 @@ package com.example.tictactoe_app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,12 +23,12 @@ public class MultiPlayerGameSelectionActivity extends AppCompatActivity {
         mOfflineBtn=findViewById(R.id.btnOffline);
         mOnlineBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Code here executes on main thread after user presses button
+                startActivity(new Intent(v.getContext(), MultiPlayerCodeActivity.class));
             }
         });
         mOfflineBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Code here executes on main thread after user presses button
+                startActivity(new Intent(v.getContext(), MultiPlayerOfflineActivity.class));
             }
         } );
     }

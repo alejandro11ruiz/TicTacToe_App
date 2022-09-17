@@ -16,6 +16,15 @@
         android:theme="@style/Theme.TicTacToe_App"
         tools:targetApi="31">
         <activity
+            android:name=".MultiPlayerCodeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MultiPlayerOnlineActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MultiPlayerOfflineActivity"
+            android:exported="false" />
+        <activity
             android:name=".SinglePlayerActivity"
             android:exported="false" />
         <activity
