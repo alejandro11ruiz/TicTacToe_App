@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 public class MultiPlayerOfflineActivity extends AppCompatActivity {
 
-    static final int DIALOG_DIFFICULTY_ID = 0;
     // Represents the internal state of the game
     private TicTacToeGame mGame;
     // Various text displayed
@@ -130,7 +129,7 @@ public class MultiPlayerOfflineActivity extends AppCompatActivity {
             mGame.turn = TicTacToeGame.COMPUTER_PLAYER;
         }else{
             mGame.startTurn = TicTacToeGame.HUMAN_PLAYER;
-            mGame.turn = TicTacToeGame.HUMAN_PLAYER;;
+            mGame.turn = TicTacToeGame.HUMAN_PLAYER;
         }
     }
 

@@ -178,7 +178,7 @@ public class SinglePlayerActivity extends AppCompatActivity {
             mGame.turn = TicTacToeGame.COMPUTER_PLAYER;
         }else{
             mGame.startTurn = TicTacToeGame.HUMAN_PLAYER;
-            mGame.turn = TicTacToeGame.HUMAN_PLAYER;;
+            mGame.turn = TicTacToeGame.HUMAN_PLAYER;
         }
     }
 

@@ -7,12 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".MultiPlayerCodeActivity">
 
+
     <EditText
         android:id="@+id/etCode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="20dp"
         android:hint="Enter Code"
         android:textSize="30dp"
@@ -24,7 +25,7 @@
         android:layout_height="wrap_content"
         android:text="Join"
         android:textAllCaps="false"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
         android:textSize="30dp"
@@ -36,7 +37,7 @@
         android:layout_height="wrap_content"
         android:text="Create"
         android:textAllCaps="false"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="60dp"
         android:layout_marginRight="60dp"
         android:textSize="30dp"
