@@ -49,6 +49,10 @@ public class MultiPlayerCodeActivity extends AppCompatActivity {
         mJoinBtn = findViewById(R.id.btnJoin);
         mCreateBtn = findViewById(R.id.btnCreate);
 
+        mCodeET.setEnabled(true);
+        mJoinBtn.setEnabled(true);
+        mCreateBtn.setEnabled(true);
+
         mCreateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

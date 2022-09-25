@@ -166,7 +166,7 @@ public class MultiPlayerOnlineActivity extends AppCompatActivity {
 
             if (mGameO.turn == IAM) {
                 if (mGameO.mBoard[pos] == TicTacToeGame.OPEN_SPOT) {
-                    mGameO.setMove(mGameO.turn,pos);
+                    setMove(IAM,pos);
 
                     Map<String, Object> childUpdates = new HashMap<>();
                     childUpdates.put("/"+ IAM, String.valueOf(pos));
@@ -237,5 +237,10 @@ public class MultiPlayerOnlineActivity extends AppCompatActivity {
         else mInfoTextView.setText(R.string.turn_he);
     }
 
+    @Override
+    public void onBackPressed(){
+        FirebaseDatabase.getInstance().getReference(MultiPlayerCodeActivity.PATH_CODES).child(MultiPlayerCodeActivity.KEY).removeValue();
+        FirebaseDatabase.getInstance().getReference(PATH_DATA).child(MultiPlayerCodeActivity.CODE).removeValue();
+    }
 
 }
