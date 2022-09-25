@@ -130,7 +130,7 @@ public class MultiPlayerOnlineActivity extends AppCompatActivity {
         mInfoY.setText("Player 1: "+mGame.humanWins);
         mInfoH.setText("Player 2: "+mGame.androidWins);
         mInfoT.setText("Ties: "+mGame.ties);
-        mTest.setText(MultiPlayerCodeActivity.KEYVALUE);
+        mTest.setText(MultiPlayerCodeActivity.KEY + " " + MultiPlayerCodeActivity.CODE);
     }
 
 
@@ -144,9 +144,7 @@ public class MultiPlayerOnlineActivity extends AppCompatActivity {
     }
 
     private void removeCode(){
-        if(MultiPlayerCodeActivity.ISCODEMAKER) {
-            FirebaseDatabase.getInstance().getReference().child(MultiPlayerCodeActivity.PATH_CODES).child(MultiPlayerCodeActivity.KEYVALUE).removeValue();
-        }
+        //if(MultiPlayerCodeActivity.ISCODEMAKER) FirebaseDatabase.getInstance().getReference().child(MultiPlayerCodeActivity.PATH_CODES).child(MultiPlayerCodeActivity.KEYVALUE).removeValue();
     }
 
     @Override

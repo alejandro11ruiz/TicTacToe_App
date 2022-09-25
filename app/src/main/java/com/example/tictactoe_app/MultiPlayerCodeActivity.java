@@ -14,28 +14,28 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class MultiPlayerCodeActivity extends AppCompatActivity {
 
     public static final String PATH_CODES = "Codes";
-    public static boolean ISCODEMAKER;
-    public static String CODE;
-    public static String KEYVALUE;
+    public static final String AVAILABLE = "AVAILABLE";
+    public static final String UNAVAILABLE = "UNAVAILABLE";
+
+    public Code mCode = new Code();
+
+    static String CODE;
+    static String KEY;
 
     private EditText mCodeET;
     private Button mJoinBtn;
     private Button mCreateBtn;
-    private ProgressBar mLoadingPB;
-
-    private boolean isCodeMaker=false;
-    private String code = "null";
-    //private boolean codeFound = false;
-    //private boolean checkTemp = false;
-    private String keyValue="null";
 
     Handler handler = new Handler();
 
@@ -47,120 +47,118 @@ public class MultiPlayerCodeActivity extends AppCompatActivity {
         mCodeET = findViewById(R.id.etCode);
         mJoinBtn = findViewById(R.id.btnJoin);
         mCreateBtn = findViewById(R.id.btnCreate);
-        mLoadingPB = findViewById(R.id.pbLoading);
 
-        mJoinBtn.setOnClickListener(view -> {
-            code = "null";
-            //codeFound = false;
-            //checkTemp = true;
-            keyValue = "null";
-            code = mCodeET.getText().toString();
-            CODE = code;
-            if (!code.equals("null") && !code.equals("")) {
-                mCreateBtn.setVisibility(View.GONE);
-                mJoinBtn.setVisibility(View.GONE);
-                mCodeET.setVisibility(View.GONE);
-                mLoadingPB.setVisibility(View.VISIBLE);
-                isCodeMaker = false;
-                ISCODEMAKER = false;
-                FirebaseDatabase.getInstance().getReference().child(PATH_CODES).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean data = isValueAvailable(snapshot, code);
-                        handler.postDelayed(() -> {
-                            if (data){
-                                //codeFound = true;
-                                accepted();
+        mCreateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!mCodeET.getText().toString().equals("null")&&!mCodeET.getText().toString().equals("")) {
+                    FirebaseDatabase.getInstance().getReference(PATH_CODES).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            boolean check = codeAlreadyExists(snapshot, mCodeET.getText().toString().trim());
+                            if(check){
+                                Toast.makeText(MultiPlayerCodeActivity.this, "This code already exist", Toast.LENGTH_SHORT).show();
                             }else{
-                                mCreateBtn.setVisibility(View.VISIBLE);
-                                mJoinBtn.setVisibility(View.VISIBLE);
-                                mCodeET.setVisibility(View.VISIBLE);
-                                mLoadingPB.setVisibility(View.GONE);
-                                Toast.makeText(MultiPlayerCodeActivity.this, "Invalid code", Toast.LENGTH_SHORT).show();
+                                mCode.setCode(mCodeET.getText().toString().trim());
+                                mCode.setAvailability(AVAILABLE);
+                                mCode.setKey(FirebaseDatabase.getInstance().getReference(PATH_CODES).push().getKey());
+                                FirebaseDatabase.getInstance().getReference(PATH_CODES).child(mCode.getKey()).setValue(mCode);
+                                Toast.makeText(MultiPlayerCodeActivity.this, "Code created successfully", Toast.LENGTH_SHORT).show();
+                                FirebaseDatabase.getInstance().getReference(PATH_CODES).child(mCode.getKey()).child("availability").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        String disp = snapshot.getValue().toString();
+                                        if(disp.equals(UNAVAILABLE)){
+                                            Toast.makeText(MultiPlayerCodeActivity.this, "We have a rival", Toast.LENGTH_SHORT).show();
+                                            accepted();
+                                        }else {
+                                            Toast.makeText(MultiPlayerCodeActivity.this, "Waiting for a rival", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                             }
-                        }, 2000);
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-            } else {
-                Toast.makeText(MultiPlayerCodeActivity.this, "Please enter a valid code", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 
-        mCreateBtn.setOnClickListener(view -> {
-            code = "null";
-            keyValue="null";
-            //codeFound = false;
-            //checkTemp = true;
-            code = mCodeET.getText().toString();
-            CODE = code;
-            if (!code.equals("null") && !code.equals("")) {
-                mCreateBtn.setVisibility(View.GONE);
-                mJoinBtn.setVisibility(View.GONE);
-                mCodeET.setVisibility(View.GONE);
-                mLoadingPB.setVisibility(View.VISIBLE);
-                isCodeMaker = true;
-                ISCODEMAKER = true;
-                FirebaseDatabase.getInstance().getReference(PATH_CODES).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean check = isValueAvailable(snapshot, code);
-                        handler.postDelayed(() -> {
-                            if (check) {
-                                Toast.makeText(MultiPlayerCodeActivity.this, "This code is already used, please enter another", Toast.LENGTH_SHORT).show();
-                                mCreateBtn.setVisibility(View.VISIBLE);
-                                mJoinBtn.setVisibility(View.VISIBLE);
-                                mCodeET.setVisibility(View.VISIBLE);
-                                mLoadingPB.setVisibility(View.GONE);
-                            } else {
-                                FirebaseDatabase.getInstance().getReference(PATH_CODES).push().setValue(code);
-                                //checkTemp = false;
-                                handler.postDelayed(() -> {
-                                    isValueAvailable(snapshot, code);
-                                    accepted();
-                                }, 2000);
+        mJoinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!mCodeET.getText().toString().equals("null")&&!mCodeET.getText().toString().equals("")){
+                    FirebaseDatabase.getInstance().getReference(PATH_CODES).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            boolean check = codeAlreadyExists(snapshot, mCodeET.getText().toString().trim());
+                            if(check){
+                                FirebaseDatabase.getInstance().getReference(PATH_CODES).child(mCode.getKey()).child("availability").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        String disp = snapshot.getValue().toString();
+                                        if(disp.equals(AVAILABLE)){
+                                            mCode.setCode(mCodeET.getText().toString().trim());
+                                            Map<String, Object> childUpdates = new HashMap<>();
+                                            childUpdates.put("/availability" , UNAVAILABLE);
+                                            FirebaseDatabase.getInstance().getReference(PATH_CODES).child(mCode.getKey()).updateChildren(childUpdates);
+                                            Toast.makeText(MultiPlayerCodeActivity.this, "Code added successfully", Toast.LENGTH_SHORT).show();
+                                            accepted();
+                                        }else {
+                                            Toast.makeText(MultiPlayerCodeActivity.this, "This code is no longer available", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }else{
+                                Toast.makeText(MultiPlayerCodeActivity.this, "This code does not exist", Toast.LENGTH_SHORT).show();
                             }
-                        }, 2000);
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-            } else {
-                Toast.makeText(MultiPlayerCodeActivity.this, "Please enter a valid code", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }
 
     public void accepted() {
-        code = "null";
-        keyValue="null";
-        isCodeMaker=false;
-        mCreateBtn.setVisibility(View.VISIBLE);
-        mJoinBtn.setVisibility(View.VISIBLE);
-        mCodeET.setVisibility(View.VISIBLE);
-        mLoadingPB.setVisibility(View.GONE);
+        CODE=mCode.getCode();
+        KEY=mCode.getKey();
+
+        mJoinBtn.setEnabled(false);
+        mCreateBtn.setEnabled(false);
+        mCodeET.setEnabled(false);
+
         startActivity(new Intent(this, MultiPlayerOnlineActivity.class));
-        //this.mCodeET.setText("");
-        //Toast.makeText(MultiPlayerCodeActivity.this, "Please don't go back", Toast.LENGTH_SHORT).show();
     }
 
-    public boolean isValueAvailable(DataSnapshot snapshot, String code) {
+    public boolean codeAlreadyExists(DataSnapshot snapshot, String code) {
         Iterable<DataSnapshot> data = snapshot.getChildren();
         for (DataSnapshot value : data) {
-            String val = (String) value.getValue();
+            String val = (String) value.child("code").getValue();
             if (val.equals(code)) {
-                this.keyValue = value.getKey();
-                KEYVALUE=keyValue;
+                this.mCode.setKey(value.getKey());
                 return true;
             }
         }
         return false;
     }
+
 }
