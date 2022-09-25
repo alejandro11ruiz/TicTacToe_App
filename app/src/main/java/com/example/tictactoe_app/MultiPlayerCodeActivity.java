@@ -9,29 +9,30 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class MultiPlayerCodeActivity extends AppCompatActivity {
 
     public static final String PATH_CODES = "Codes";
     public static final String AVAILABLE = "AVAILABLE";
     public static final String UNAVAILABLE = "UNAVAILABLE";
+    public static final char CREATOR = 'C';
+    public static final char JOINED = 'J';
 
     public Code mCode = new Code();
 
     static String CODE;
     static String KEY;
+    static char ME;
+    static char HE;
 
     private EditText mCodeET;
     private Button mJoinBtn;
@@ -70,9 +71,12 @@ public class MultiPlayerCodeActivity extends AppCompatActivity {
                                         String disp = snapshot.getValue().toString();
                                         if(disp.equals(UNAVAILABLE)){
                                             Toast.makeText(MultiPlayerCodeActivity.this, "We have a rival", Toast.LENGTH_SHORT).show();
-                                            accepted();
+                                            accepted(CREATOR);
                                         }else {
                                             Toast.makeText(MultiPlayerCodeActivity.this, "Waiting for a rival", Toast.LENGTH_SHORT).show();
+                                            mJoinBtn.setEnabled(false);
+                                            mCreateBtn.setEnabled(false);
+                                            mCodeET.setEnabled(false);
                                         }
                                     }
 
@@ -112,7 +116,7 @@ public class MultiPlayerCodeActivity extends AppCompatActivity {
                                             childUpdates.put("/availability" , UNAVAILABLE);
                                             FirebaseDatabase.getInstance().getReference(PATH_CODES).child(mCode.getKey()).updateChildren(childUpdates);
                                             Toast.makeText(MultiPlayerCodeActivity.this, "Code added successfully", Toast.LENGTH_SHORT).show();
-                                            accepted();
+                                            accepted(JOINED);
                                         }else {
                                             Toast.makeText(MultiPlayerCodeActivity.this, "This code is no longer available", Toast.LENGTH_SHORT).show();
                                         }
@@ -138,15 +142,22 @@ public class MultiPlayerCodeActivity extends AppCompatActivity {
         });
     }
 
-    public void accepted() {
+    public void accepted(char w) {
         CODE=mCode.getCode();
         KEY=mCode.getKey();
-
-        mJoinBtn.setEnabled(false);
-        mCreateBtn.setEnabled(false);
-        mCodeET.setEnabled(false);
-
-        startActivity(new Intent(this, MultiPlayerOnlineActivity.class));
+        if(w==MultiPlayerCodeActivity.CREATOR){
+            ME=TicTacToeGame.HUMAN_PLAYER;
+            HE=TicTacToeGame.COMPUTER_PLAYER;
+        }else if(w==MultiPlayerCodeActivity.JOINED){
+            ME=TicTacToeGame.COMPUTER_PLAYER;
+            HE=TicTacToeGame.HUMAN_PLAYER;
+        }
+        //handler.postDelayed(new Runnable() {
+            //@Override
+            //public void run() {
+                startActivity(new Intent(this, MultiPlayerOnlineActivity.class));
+            //}
+        //},2000);
     }
 
     public boolean codeAlreadyExists(DataSnapshot snapshot, String code) {

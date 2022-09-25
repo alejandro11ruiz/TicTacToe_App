@@ -236,4 +236,19 @@ public class TicTacToeGame {
     public boolean getStartedGame(){
         return gameStarted;
     }
+
+    public void toChangeTurn(){
+        if (this.turn==HUMAN_PLAYER)this.turn=COMPUTER_PLAYER;
+        else if (this.turn==COMPUTER_PLAYER)this.turn=HUMAN_PLAYER;
+    }
+
+    public void toChangeStartTurn(){
+        if (this.startTurn==HUMAN_PLAYER)this.startTurn=COMPUTER_PLAYER;
+        else if (this.startTurn==COMPUTER_PLAYER)this.startTurn=HUMAN_PLAYER;
+    }
+
+    public void setTurn(char turn){
+        this.turn=turn;
+    }
+
 }

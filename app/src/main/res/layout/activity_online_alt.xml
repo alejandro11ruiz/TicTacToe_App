@@ -5,20 +5,21 @@
     android:layout_height="fill_parent"
     android:gravity="center_horizontal">
 
+    <TextView
+        android:id="@+id/whoIAm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:text="info"
+        android:textSize="30dp" />
+
     <com.example.tictactoe_app.BoardView
         android:id="@+id/boardO"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginTop="50dp"/>
 
-    <TextView
-        android:id="@+id/tester"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="30dp"
-        android:text="key"
-        />
 
     <TextView
         android:id="@+id/informationO"
